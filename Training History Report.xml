@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<report version="2019120801"><visible><![CDATA[1]]></visible>
+<name><![CDATA[Training History Report]]></name>
+<summary><![CDATA[]]></summary>
+<summaryformat><![CDATA[1]]></summaryformat>
+<type><![CDATA[sql]]></type>
+<pagination><![CDATA[0]]></pagination>
+<components><![CDATA[YTozOntzOjk6ImN1c3RvbXNxbCI7YToxOntzOjY6ImNvbmZpZyI7Tzo4OiJzdGRDbGFzcyI6Nzp7czo4OiJxdWVyeXNxbCI7czo3NjE6IlNFTEVDVCUwRCUwQWNjLm5hbWUrJTIyQ2F0ZWdvcnklMjIlMkMlMEQlMEFDT05DQVQlMjglMjclM0NhK3RhcmdldCUzRCUyMl9ibGFuayUyMitocmVmJTNEJTIyJTI1JTI1V1dXUk9PVCUyNSUyNSUyRmNvdXJzZSUyRnZpZXcucGhwJTNGaWQlM0QlMjclMkMrYy5pZCUyQyslMjclMjIlM0UlMjclMkMrYy5zaG9ydG5hbWUlMkMlMjclM0MlMkZhJTNFJTI3JTI5KyUyMkNvdXJzZSUyMiUyQyUwRCUwQSUyOHRvX2NoYXIlMjh0b190aW1lc3RhbXAlMjhjb21wLnRpbWVjb21wbGV0ZWQlMjklMkMlMjdZWVlZLU1NLUREJTI3JTI5JTI5KyUyMkRhdGUrb2YrQ29tcGxldGlvbiUyMiUwRCUwQUZST00lMEQlMEElMjhTRUxFQ1QrJTJBK0ZST00rcHJlZml4X2NvdXJzZV9jb21wbGV0aW9ucytjYytXSEVSRStjYy50aW1lY29tcGxldGVkKyUzRSswKyUwRCUwQVVOSU9OK1NFTEVDVCslMkErRlJPTStwcmVmaXhfbG9jYWxfcmVjb21wbGV0aW9uX2NjK2xyJTI5K0FTK2NvbXAlMEQlMEFKT0lOK3ByZWZpeF91c2VyK0FTK3UrT04rY29tcC51c2VyaWQlM0QrdS5pZCUwRCUwQUpPSU4rcHJlZml4X2NvdXJzZStBUytjK09OK2NvbXAuY291cnNlJTNEK2MuaWQlMEQlMEFKT0lOK3ByZWZpeF9jb3Vyc2VfY2F0ZWdvcmllcytBUytjYytPTitjLmNhdGVnb3J5KyUzRCtjYy5pZCUwRCUwQVdIRVJFK2NvbXAudXNlcmlkKyUzRCslMjUlMjVVU0VSSUQlMjUlMjUlMEQlMEFPUkRFUitCWSUwRCUwQWMuc2hvcnRuYW1lK0FTQyUyQytjb21wLnRpbWVjb21wbGV0ZWQrQVNDIjtzOjg6ImNvdXJzZWlkIjtpOjE7czo4OiJlbWJlZGRlZCI7aTowO3M6MTI6InN1Ym1pdGJ1dHRvbiI7czoxMjoiU2F2ZStjaGFuZ2VzIjtzOjE2OiJyZXBvcnRjYXRlZ29yaWVzIjtzOjE6IjAiO3M6MTc6InJlcG9ydHNpbmNhdGVnb3J5IjtzOjE6IjAiO3M6MTQ6InJlbW90ZXF1ZXJ5c3FsIjtzOjA6IiI7fX1zOjExOiJwZXJtaXNzaW9ucyI7YToyOntzOjY6ImNvbmZpZyI7Tzo4OiJzdGRDbGFzcyI6MTp7czoxMzoiY29uZGl0aW9uZXhwciI7czowOiIiO31zOjg6ImVsZW1lbnRzIjthOjE6e2k6MDthOjU6e3M6MjoiaWQiO3M6MTU6InFQWmxvcUsybU9aWHVLRyI7czo4OiJmb3JtZGF0YSI7Tzo4OiJzdGRDbGFzcyI6MDp7fXM6MTA6InBsdWdpbm5hbWUiO3M6NjoiYW55b25lIjtzOjE0OiJwbHVnaW5mdWxsbmFtZSI7czo2OiJBbnlvbmUiO3M6Nzoic3VtbWFyeSI7czo1NToiQW55K3VzZXIraW4rdGhlK0NhbXB1cyt3aWxsK2JlK2FibGUrdG8rdmlldyt0aGlzK3JlcG9ydCI7fX19czo3OiJmaWx0ZXJzIjthOjE6e3M6ODoiZWxlbWVudHMiO2E6MDp7fX19]]></components>
+<export><![CDATA[csv,xls,]]></export>
+<jsordering><![CDATA[1]]></jsordering>
+<global><![CDATA[1]]></global>
+<lastexecutiontime><![CDATA[4]]></lastexecutiontime>
+<cron><![CDATA[0]]></cron>
+<remote><![CDATA[0]]></remote>
+<enableschedule><![CDATA[0]]></enableschedule>
+<emailto><![CDATA[]]></emailto>
+<customdir><![CDATA[]]></customdir>
+<frequency><![CDATA[daily]]></frequency>
+<runat><![CDATA[]]></runat>
+<lastrun><![CDATA[0]]></lastrun>
+<lastexport><![CDATA[1587398179]]></lastexport>
+<noresultdisplay><![CDATA[]]></noresultdisplay>
+<datatableperpage><![CDATA[100]]></datatableperpage>
+<converttime><![CDATA[0]]></converttime>
+<timeformat><![CDATA[]]></timeformat>
+<fixedwidthpattern><![CDATA[]]></fixedwidthpattern>
+</report>

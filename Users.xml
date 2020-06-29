@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<report version="2019120801"><visible><![CDATA[1]]></visible>
+<name><![CDATA[Users]]></name>
+<summary><![CDATA[<p>User List</p>]]></summary>
+<summaryformat><![CDATA[1]]></summaryformat>
+<type><![CDATA[sql]]></type>
+<pagination><![CDATA[100]]></pagination>
+<components><![CDATA[YTozOntzOjk6ImN1c3RvbXNxbCI7YToxOntzOjY6ImNvbmZpZyI7Tzo4OiJzdGRDbGFzcyI6Nzp7czo4OiJxdWVyeXNxbCI7czoxMDg6IlNlbGVjdCt1LiUyQStmcm9tK3ByZWZpeF91c2VyK3UlMEQlMEFXSEVSRSsxJTNEMSUwRCUwQSUyNSUyNUZJTFRFUl9TUUxfc3FsdHJlY29yZHMlM0F1LnN1c3BlbmRlZCUzQSUzRCUyNSUyNSI7czo4OiJjb3Vyc2VpZCI7aToxO3M6ODoiZW1iZWRkZWQiO2k6MDtzOjEyOiJzdWJtaXRidXR0b24iO3M6MTI6IlNhdmUrY2hhbmdlcyI7czoxNjoicmVwb3J0Y2F0ZWdvcmllcyI7czo1OiJ1c2VycyI7czoxNzoicmVwb3J0c2luY2F0ZWdvcnkiO3M6NToidXNlcnMiO3M6MTQ6InJlbW90ZXF1ZXJ5c3FsIjtzOjA6IiI7fX1zOjExOiJwZXJtaXNzaW9ucyI7YToxOntzOjY6ImNvbmZpZyI7Tzo4OiJzdGRDbGFzcyI6MTp7czoxMzoiY29uZGl0aW9uZXhwciI7czowOiIiO319czo3OiJmaWx0ZXJzIjthOjE6e3M6ODoiZWxlbWVudHMiO2E6MTp7aTowO2E6NTp7czoyOiJpZCI7czoxNToiUnRleVNtM1NaR1NvU2FvIjtzOjg6ImZvcm1kYXRhIjtPOjg6InN0ZENsYXNzIjo1OntzOjg6ImlkbnVtYmVyIjtzOjExOiJzcWx0cmVjb3JkcyI7czo1OiJsYWJlbCI7czo1OiJVc2VycyI7czo4OiJxdWVyeXNxbCI7czoxMDE6IlNFTEVDVCswK0FTK2NvbmZpZ2lkJTJDKyUyN0FjdGl2ZSUyNytBUytjb25maWdkaXNwbGF5JTBEJTBBVU5JT04rQUxMJTBEJTBBU0VMRUNUKzElMkMrJTI3U3VzcGVuZGVkJTI3IjtzOjEwOiJkZWZhdWx0c3FsIjtzOjIwOiJTRUxFQ1QrMCtBUytjb25maWdpZCI7czoxMjoic3VibWl0YnV0dG9uIjtzOjEyOiJTYXZlK2NoYW5nZXMiO31zOjEwOiJwbHVnaW5uYW1lIjtzOjEwOiJzcWxvcHRpb25zIjtzOjE0OiJwbHVnaW5mdWxsbmFtZSI7czoxMToiU1FMK09wdGlvbnMiO3M6Nzoic3VtbWFyeSI7czo2MDoiQ3JlYXRlK2Erc2VsZWN0K2Ryb3Bkb3duK2ZpbHRlcit1c2luZythK2N1c3RvbStzcWwrc3RhdGVtZW50Ijt9fX19]]></components>
+<export><![CDATA[xls,]]></export>
+<jsordering><![CDATA[1]]></jsordering>
+<global><![CDATA[1]]></global>
+<lastexecutiontime><![CDATA[8]]></lastexecutiontime>
+<cron><![CDATA[0]]></cron>
+<remote><![CDATA[0]]></remote>
+<enableschedule><![CDATA[0]]></enableschedule>
+<emailto><![CDATA[]]></emailto>
+<customdir><![CDATA[]]></customdir>
+<frequency><![CDATA[daily]]></frequency>
+<runat><![CDATA[]]></runat>
+<lastrun><![CDATA[0]]></lastrun>
+<lastexport><![CDATA[1591190174]]></lastexport>
+<noresultdisplay><![CDATA[]]></noresultdisplay>
+<datatableperpage><![CDATA[100]]></datatableperpage>
+<converttime><![CDATA[0]]></converttime>
+<timeformat><![CDATA[]]></timeformat>
+<fixedwidthpattern><![CDATA[]]></fixedwidthpattern>
+</report>
