@@ -21,7 +21,7 @@ SELECT
     result.manager  "Manager",
 	result.cohort  "Cohort",
 	CASE
-        WHEN result.airtimerole = 'Superintendent' OR result.airtimerole = 'Clerk' OR result.airtimerole = 'Site Accountant' OR result.airtimerole = 'Scheduler' THEN
+        WHEN result.airtimerole like '%Superintendent%' OR result.airtimerole like '%Clerk%' OR result.airtimerole like '%Site Accountant%' OR result.airtimerole like '%Scheduler%' THEN
         (
 		    CASE
                 WHEN result.jobstatus = 'Yes' THEN 'Deployed'
