@@ -71,7 +71,14 @@ FROM
         to_char(to_timestamp(cached.originalcomp), 'YYYY-MM-DD') "original",
         to_char(to_timestamp(cached.latestcomp), 'YYYY-MM-DD') "recent",
         CASE
-            WHEN cached.latestcomp IS NULL THEN 3
+            WHEN cached.latestcomp IS NULL THEN
+            (
+                SELECT
+                CASE
+                    WHEN cfggrace.value::bigint > 0 AND ((SELECT GREATEST(ue.timecreated, ue.timestart)) + cfggrace.value::bigint > extract(epoch from now())) THEN 2
+                    ELSE 3
+                END
+            )
             WHEN cfgenable.value = '1' AND cfgrecompletiondur.value IS NOT NULL THEN
             (
                 SELECT
@@ -97,7 +104,14 @@ FROM
   			WHEN cfgenable.value = '1' AND cfgrecompletiondur.value = '94348800' THEN 'Triennial'
         END "duration",
         CASE
-            WHEN cached.latestcomp IS NULL THEN NULL
+            WHEN cached.latestcomp IS NULL THEN
+            (
+                SELECT
+                CASE
+                    WHEN cfggrace.value::bigint > 0 THEN to_char(to_timestamp((SELECT GREATEST(ue.timecreated, ue.timestart)) + cfggrace.value::bigint), 'YYYY-MM-DD')
+                    ELSE NULL
+                END
+            )
             WHEN cfgenable.value = '1' AND cfgrecompletiondur.value IS NOT NULL THEN
                 to_char(to_timestamp(cached.latestcomp + cfgrecompletiondur.value::bigint), 'YYYY-MM-DD')
             ELSE NULL
@@ -174,6 +188,7 @@ FROM
         LEFT JOIN prefix_local_recompletion_cc_cached cached ON cached.userid = u.id AND cached.courseid = c.id
         LEFT JOIN prefix_local_recompletion_config cfgenable ON cfgenable.course = c.id AND cfgenable.name = 'enable'
         LEFT JOIN prefix_local_recompletion_config cfgrecompletiondur ON cfgrecompletiondur.course = c.id AND cfgrecompletiondur.name = 'recompletionduration'
+        LEFT JOIN prefix_local_recompletion_config cfggrace ON cfggrace.course = c.id AND cfggrace.name = 'graceperiod'
         LEFT JOIN prefix_user_info_field AS manfield ON manfield.shortname = 'managerid'
         LEFT JOIN prefix_user_info_data AS mandata ON mandata.fieldid = manfield.id AND mandata.userid = u.id
     WHERE

@@ -156,7 +156,14 @@ FROM
                 ) LIMIT 1
         )  "recent",
         CASE
-            WHEN corecomp.id IS NULL AND maxlrcc.id IS NULL THEN 3
+            WHEN corecomp.id IS NULL AND maxlrcc.id IS NULL THEN
+            (
+                SELECT
+                CASE
+                    WHEN cfggrace.value::bigint > 0 AND ((SELECT GREATEST(ue.timecreated, ue.timestart)) + cfggrace.value::bigint > extract(epoch from now())) THEN 2
+                    ELSE 3
+                END
+            )
             WHEN cfgenable.value = '1' AND cfgrecompletiondur.value IS NOT NULL THEN
             (
                 SELECT
@@ -209,7 +216,14 @@ FROM
         END     "duration",
 
         CASE
-            WHEN corecomp.id IS NULL AND maxlrcc.id IS NULL THEN NULL
+            WHEN corecomp.id IS NULL AND maxlrcc.id IS NULL THEN
+            (
+                SELECT
+                CASE
+                    WHEN cfggrace.value::bigint > 0 THEN to_char(to_timestamp((SELECT GREATEST(ue.timecreated, ue.timestart)) + cfggrace.value::bigint), 'YYYY-MM-DD')
+                    ELSE NULL
+                END
+            )
             WHEN cfgenable.value = '1' AND cfgrecompletiondur.value IS NOT NULL THEN
             (
                 SELECT
@@ -333,6 +347,7 @@ FROM
         )
         LEFT JOIN prefix_local_recompletion_config cfgenable ON cfgenable.course = c.id AND cfgenable.name = 'enable'
         LEFT JOIN prefix_local_recompletion_config cfgrecompletiondur ON cfgrecompletiondur.course = c.id AND cfgrecompletiondur.name = 'recompletionduration'
+        LEFT JOIN prefix_local_recompletion_config cfggrace ON cfggrace.course = c.id AND cfggrace.name = 'graceperiod'
         LEFT JOIN prefix_local_recompletion_cc maxlrcc ON maxlrcc.id =
         (
             SELECT
