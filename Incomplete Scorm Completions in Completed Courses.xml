@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<report version="2019120802"><visible><![CDATA[1]]></visible>
+<name><![CDATA[Incomplete Scorm Completions in Completed Courses]]></name>
+<summary><![CDATA[<p><blockquote type="cite"><div><div dir="ltr"><div>This report was created to tell us the people who completed their SCORM before resetting their course.&nbsp;</div><div><br></div><div>The users in this report would have valid course completions which are preventing the new SCORM completion from calculating them a new course completion time.&nbsp;</div><div><span style="font-size: 0.9375rem;">To&nbsp;fix them we'll need to create completion records to match the activity completion times.&nbsp;</span></div><div><br></div><div>To help mitigate how often this happens we added an option to do an early reset on courses called "Early recompletion duration".</div></div></div></blockquote><br></p>]]></summary>
+<summaryformat><![CDATA[1]]></summaryformat>
+<type><![CDATA[sql]]></type>
+<pagination><![CDATA[0]]></pagination>
+<components><![CDATA[YToyOntzOjk6ImN1c3RvbXNxbCI7YToxOntzOjY6ImNvbmZpZyI7Tzo4OiJzdGRDbGFzcyI6Nzp7czo4OiJxdWVyeXNxbCI7czoxNjg4OiJTRUxFQ1QrdS5pZCthcyt1c2VyaWQlMkMrdS5maXJzdG5hbWUlMkMrdS5sYXN0bmFtZSUyQytjLmlkK2FzK2NvdXJzZWlkJTJDK2MuZnVsbG5hbWUlMkMrdG9fY2hhciUyOHRvX3RpbWVzdGFtcCUyOE1BWCUyOHNsb2cudGltZWNyZWF0ZWQlMjklMjklMkMrJTI3WVlZWS1NTS1ERCtISCUzQU1JJTI3JTI5K2FzK2FjdGl2aXR5Y29tcGxldGlvbiUyQytNQVglMjhzbG9nLnRpbWVjcmVhdGVkJTI5K2FzK3Jhd3RpbWVzdGFtcCUyQyUwRCUwQXRvX2NoYXIlMjh0b190aW1lc3RhbXAlMjglMjhTRUxFQ1QrTUFYJTI4Y2MudGltZWNvbXBsZXRlZCUyOSUwRCUwQSsrKysrKysrKysrKysrKysrK0ZST00rJTI4JTBEJTBBKysrKysrKysrKysrKysrKysrU0VMRUNUK2NvdXJzZSUyQyt1c2VyaWQlMkMrdGltZWNvbXBsZXRlZCtGUk9NKyU3QmNvdXJzZV9jb21wbGV0aW9ucyU3RCUwRCUwQSsrKysrKysrKysrKysrKysrK1VOSU9OKyUwRCUwQSsrKysrKysrKysrKysrKysrK1NFTEVDVCtjb3Vyc2UlMkMrdXNlcmlkJTJDK3RpbWVjb21wbGV0ZWQrRlJPTSslN0Jsb2NhbF9yZWNvbXBsZXRpb25fY2MlN0QlMEQlMEErKysrKysrKysrKysrKysrKyslMjkrY2MlMEQlMEErKysrKysrKysrKysrKysrKytXSEVSRStjYy5jb3Vyc2UrJTNEK2MuaWQrQU5EK2NjLnVzZXJpZCslM0QrdS5pZCUyOSUyOSUyQyslMjdZWVlZLU1NLUREK0hIJTNBTUklMjclMjkrYXMrY291cnNlY29tcGxldGlvbiUwRCUwQUZST00rJTdCdXNlciU3RCt1JTBEJTBBSk9JTislN0Jsb2dzdG9yZV9zdGFuZGFyZF9sb2clN0Qrc2xvZytPTitzbG9nLnVzZXJpZCslM0QrdS5pZCtBTkQrc2xvZy5ldmVudG5hbWUrJTNEKyUyNyU1Q21vZF9zY29ybSU1Q2V2ZW50JTVDc2NvcmVyYXdfc3VibWl0dGVkJTI3JTBEJTBBSk9JTislN0Jjb3Vyc2UlN0QrYytPTitjLmlkKyUzRCtzbG9nLmNvdXJzZWlkJTBEJTBBTEVGVCtKT0lOKyU3QmxvZ3N0b3JlX3N0YW5kYXJkX2xvZyU3RCt1bG9nK09OK3Vsb2cuZXZlbnRuYW1lKyUzRCslMjclNUNjb3JlJTVDZXZlbnQlNUNjb3Vyc2VfbW9kdWxlX2NvbXBsZXRpb25fdXBkYXRlZCUyNytBTkQrdWxvZy51c2VyaWQrJTNEK3UuaWQrK0FORCt1bG9nLmNvdXJzZWlkKyUzRCtzbG9nLmNvdXJzZWlkK0FORCt1bG9nLnRpbWVjcmVhdGVkKyUzRSUzRCtzbG9nLnRpbWVjcmVhdGVkJTBEJTBBV0hFUkUrdWxvZy5pZCtJUytOVUxMJTBEJTBBQU5EK3Nsb2cudGltZWNyZWF0ZWQrJTNFKyUyOFNFTEVDVCtNQVglMjhjYy50aW1lY29tcGxldGVkJTI5JTBEJTBBKysrKysrKysrKysrKysrKysrRlJPTSslMjglMEQlMEErKysrKysrKysrKysrKysrKytTRUxFQ1QrY291cnNlJTJDK3VzZXJpZCUyQyt0aW1lY29tcGxldGVkK0ZST00rJTdCY291cnNlX2NvbXBsZXRpb25zJTdEJTBEJTBBKysrKysrKysrKysrKysrKysrVU5JT04rJTBEJTBBKysrKysrKysrKysrKysrKysrU0VMRUNUK2NvdXJzZSUyQyt1c2VyaWQlMkMrdGltZWNvbXBsZXRlZCtGUk9NKyU3QmxvY2FsX3JlY29tcGxldGlvbl9jYyU3RCUwRCUwQSsrKysrKysrKysrKysrKysrKyUyOStjYyUwRCUwQSsrKysrKysrKysrKysrKysrK1dIRVJFK2NjLmNvdXJzZSslM0Qrc2xvZy5jb3Vyc2VpZCtBTkQrY2MudXNlcmlkKyUzRCt1LmlkJTI5KyUyQis4NjQwMCUwRCUwQUdST1VQK0JZK3UuaWQlMkMrYy5pZCUwRCUwQU9SREVSK0JZK3UuaWQlMkMrYy5pZCI7czo4OiJjb3Vyc2VpZCI7aToxO3M6ODoiZW1iZWRkZWQiO2k6MDtzOjEyOiJzdWJtaXRidXR0b24iO3M6MTI6IlNhdmUrY2hhbmdlcyI7czoxNjoicmVwb3J0Y2F0ZWdvcmllcyI7czoxOiIwIjtzOjE3OiJyZXBvcnRzaW5jYXRlZ29yeSI7czoxOiIwIjtzOjE0OiJyZW1vdGVxdWVyeXNxbCI7czowOiIiO319czoxMToicGVybWlzc2lvbnMiO2E6MTp7czo2OiJjb25maWciO086ODoic3RkQ2xhc3MiOjE6e3M6MTM6ImNvbmRpdGlvbmV4cHIiO3M6MDoiIjt9fX0=]]></components>
+<export><![CDATA[csv,]]></export>
+<jsordering><![CDATA[1]]></jsordering>
+<global><![CDATA[0]]></global>
+<lastexecutiontime><![CDATA[10676]]></lastexecutiontime>
+<cron><![CDATA[0]]></cron>
+<remote><![CDATA[0]]></remote>
+<enableschedule><![CDATA[0]]></enableschedule>
+<emailto><![CDATA[]]></emailto>
+<customdir><![CDATA[]]></customdir>
+<frequency><![CDATA[daily]]></frequency>
+<runat><![CDATA[]]></runat>
+<lastrun><![CDATA[0]]></lastrun>
+<lastexport><![CDATA[1601647431]]></lastexport>
+<noresultdisplay><![CDATA[]]></noresultdisplay>
+<datatableperpage><![CDATA[100]]></datatableperpage>
+<converttime><![CDATA[0]]></converttime>
+<timeformat><![CDATA[]]></timeformat>
+<fixedwidthpattern><![CDATA[]]></fixedwidthpattern>
+</report>

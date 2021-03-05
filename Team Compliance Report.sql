@@ -19,6 +19,7 @@ SELECT
     result.lob  "LOB",
     result.region  "Region",
     result.manager  "Manager",
+    result.mandiv  "Manager Division",
     result.cohort  "Cohort",
     CASE
         WHEN result.airtimerole like '%Superintendent%' OR result.airtimerole like '%Clerk%' OR result.airtimerole like '%Site Accountant%' OR result.airtimerole like '%Scheduler%' THEN (
@@ -270,6 +271,15 @@ FROM
     FROM
     prefix_user manuser WHERE mandata.data <> '' AND manuser.id = mandata.data::bigint
     )   "manager",
+
+    (
+    SELECT
+    d.data
+    FROM
+    prefix_user_info_field AS f JOIN prefix_user_info_data AS d ON f.id = d.fieldid
+    WHERE
+    f.shortname = 'mandiv' AND d.userid = u.id
+    )  "mandiv",
 
     cohort.name "cohort",
     (

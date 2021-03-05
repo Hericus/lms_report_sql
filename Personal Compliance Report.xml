@@ -9,7 +9,7 @@
 <export><![CDATA[csv,xls,]]></export>
 <jsordering><![CDATA[1]]></jsordering>
 <global><![CDATA[1]]></global>
-<lastexecutiontime><![CDATA[25]]></lastexecutiontime>
+<lastexecutiontime><![CDATA[24]]></lastexecutiontime>
 <cron><![CDATA[0]]></cron>
 <remote><![CDATA[0]]></remote>
 <enableschedule><![CDATA[0]]></enableschedule>
@@ -18,7 +18,7 @@
 <frequency><![CDATA[daily]]></frequency>
 <runat><![CDATA[]]></runat>
 <lastrun><![CDATA[0]]></lastrun>
-<lastexport><![CDATA[1592220656]]></lastexport>
+<lastexport><![CDATA[1609340694]]></lastexport>
 <noresultdisplay><![CDATA[]]></noresultdisplay>
 <datatableperpage><![CDATA[100]]></datatableperpage>
 <converttime><![CDATA[0]]></converttime>

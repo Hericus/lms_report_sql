@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<report version="2019120801"><visible><![CDATA[1]]></visible>
+<report version="2019120802"><visible><![CDATA[1]]></visible>
 <name><![CDATA[Course Enrollments]]></name>
 <summary><![CDATA[<pre class="sql"></pre>]]></summary>
 <summaryformat><![CDATA[0]]></summaryformat>
@@ -9,7 +9,7 @@
 <export><![CDATA[ods,xls,]]></export>
 <jsordering><![CDATA[1]]></jsordering>
 <global><![CDATA[1]]></global>
-<lastexecutiontime><![CDATA[1768]]></lastexecutiontime>
+<lastexecutiontime><![CDATA[1874]]></lastexecutiontime>
 <cron><![CDATA[0]]></cron>
 <remote><![CDATA[0]]></remote>
 <enableschedule><![CDATA[0]]></enableschedule>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<report version="2019120801"><visible><![CDATA[1]]></visible>
+<report version="2019120802"><visible><![CDATA[1]]></visible>
 <name><![CDATA[Course Completion Settings]]></name>
 <summary><![CDATA[]]></summary>
 <summaryformat><![CDATA[1]]></summaryformat>
@@ -9,7 +9,7 @@
 <export><![CDATA[csv,xls,]]></export>
 <jsordering><![CDATA[1]]></jsordering>
 <global><![CDATA[1]]></global>
-<lastexecutiontime><![CDATA[175]]></lastexecutiontime>
+<lastexecutiontime><![CDATA[190]]></lastexecutiontime>
 <cron><![CDATA[0]]></cron>
 <remote><![CDATA[0]]></remote>
 <enableschedule><![CDATA[0]]></enableschedule>
@@ -18,7 +18,7 @@
 <frequency><![CDATA[daily]]></frequency>
 <runat><![CDATA[]]></runat>
 <lastrun><![CDATA[0]]></lastrun>
-<lastexport><![CDATA[1559268904]]></lastexport>
+<lastexport><![CDATA[1599669656]]></lastexport>
 <noresultdisplay><![CDATA[]]></noresultdisplay>
 <datatableperpage><![CDATA[100]]></datatableperpage>
 <converttime><![CDATA[0]]></converttime>
