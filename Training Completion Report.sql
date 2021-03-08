@@ -7,6 +7,10 @@ SELECT
     result.employeenumber  "Employee Number",
     result.enrollment "Course Assignment Method",
     result.course "Course",
+    CASE
+        WHEN result.tiedtocompliance = 1 THEN 'Yes'
+        ELSE 'No'
+        END "Tied to Compliance",
     result.original  "Original Completion Date",
     result.recent  "Most Recent Completion Date",
     CASE
@@ -49,6 +53,7 @@ FROM
     u.firstname                                                             "firstname",
     u.lastname                                                              "lastname",
     u.email                                                                 "email",
+    course_tied_to_compliance.intvalue as "tiedtocompliance",
     (
     SELECT
     d.data
@@ -331,6 +336,7 @@ FROM
     JOIN prefix_course_categories cc ON c.category = cc.id
     JOIN prefix_user AS u ON u.id = ue.userid
     JOIN prefix_cohort cohort ON cohort.id = e.customint1
+    LEFT JOIN prefix_customfield_data course_tied_to_compliance ON course_tied_to_compliance.instanceid = c.id AND course_tied_to_compliance.fieldid = (SELECT cf.id FROM prefix_customfield_field cf WHERE cf.shortname = 'course_tied_to_compliance')
     LEFT JOIN prefix_course_completions corecomp ON corecomp.id =
     (
     SELECT
