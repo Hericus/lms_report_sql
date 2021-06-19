@@ -87,25 +87,18 @@ FROM
     (
     SELECT
     CASE
-    WHEN cached.latestcomp + cfgrecompletiondur.value::bigint < extract(epoch from now()) THEN 3
-    WHEN cached.latestcomp + cfgrecompletiondur.value::bigint -
-    (
-    SELECT
-    cfg.value::bigint
-    FROM
-    prefix_local_recompletion_config AS cfg
-    WHERE
-    cfg.course = c.id AND cfg.name = 'notificationstart'
-    ) < extract(epoch from now()) THEN 2
+    WHEN cached.latestcomp + cached.latestduration < extract(epoch from now()) THEN 3
+    WHEN cached.latestcomp + cached.latestduration -
+    cached.latestnotify < extract(epoch from now()) THEN 2
     ELSE 1
     END
     )
     WHEN cached.latestcomp IS NOT NULL THEN 1
     END "status",
     CASE
-    WHEN cfgenable.value = '1' AND cfgrecompletiondur.value = '31449600' THEN 'Annual'
-    WHEN cfgenable.value = '1' AND cfgrecompletiondur.value = '62899200' THEN 'Biennial'
-    WHEN cfgenable.value = '1' AND cfgrecompletiondur.value = '94348800' THEN 'Triennial'
+    WHEN cfgenable.value = '1' AND cached.latestduration = 31449600 THEN 'Annual'
+    WHEN cfgenable.value = '1' AND cached.latestduration = 62899200 THEN 'Biennial'
+    WHEN cfgenable.value = '1' AND cached.latestduration = 94348800 THEN 'Triennial'
     END "duration",
     CASE
     WHEN cached.latestcomp IS NULL THEN
@@ -122,7 +115,7 @@ FROM
     END
     )
     WHEN cfgenable.value = '1' AND cfgrecompletiondur.value IS NOT NULL THEN
-    to_char(to_timestamp(cached.latestcomp + cfgrecompletiondur.value::bigint), 'YYYY-MM-DD')
+    to_char(to_timestamp(cached.latestcomp + cached.latestduration), 'YYYY-MM-DD')
     ELSE NULL
     END "expiration",
     u.idnumber  "sso",
