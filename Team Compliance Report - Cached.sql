@@ -77,7 +77,7 @@ FROM
     SELECT
     CASE
     WHEN cfggrace.value::bigint > 0 AND
-    ((SELECT GREATEST(MIN(ue2.timecreated), MIN(ue2.timestart))
+    ((SELECT MAX(GREATEST(ue2.timecreated, ue2.timestart, ue2.timemodified))
     FROM prefix_user_enrolments ue2 JOIN prefix_enrol e2 ON e2.id = ue2.enrolid
     WHERE e2.courseid = c.id AND ue2.userid = u.id) + cfggrace.value::bigint > extract(epoch from now())) THEN 2
     ELSE 3
@@ -107,7 +107,7 @@ FROM
     CASE
     WHEN cfggrace.value::bigint > 0
     THEN to_char(to_timestamp(
-    (SELECT GREATEST(MIN(ue2.timecreated), MIN(ue2.timestart))
+    (SELECT MAX(GREATEST(ue2.timecreated, ue2.timestart, ue2.timemodified))
     FROM prefix_user_enrolments ue2
     JOIN prefix_enrol e2 ON e2.id = ue2.enrolid
     WHERE e2.courseid = c.id AND ue2.userid = u.id) + cfggrace.value::bigint), 'YYYY-MM-DD')
