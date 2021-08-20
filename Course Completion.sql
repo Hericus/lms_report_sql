@@ -22,6 +22,10 @@ SELECT
     cc.name AS "Category",
     CONCAT('<a target="_blank" href="%%WWWROOT%%/course/view.php?id=', c.id, '">', c.shortname,'</a>') "Course",
     course_hours.value as "Course Hours",
+    CASE
+        WHEN hours_billable.value::int = 1 THEN 'YES'
+        ELSE 'NO'
+    END as "Hours Billable",
     to_char(to_timestamp(p.timecompleted),'YYYY-MM-DD') "Date completed",
     (
         CASE
@@ -33,12 +37,22 @@ SELECT
         SELECT string_agg(e.enrol, ', ')
         FROM prefix_user_enrolments AS ue JOIN prefix_enrol AS e ON ue.enrolid = e.id
         WHERE ue.userid = u.id and e.courseid = c.id
-    ) AS "Enrollment Methods"
+    ) AS "Enrollment Methods",
+    (
+        SELECT
+            d.data
+        FROM
+            prefix_user_info_field AS f
+                JOIN prefix_user_info_data AS d ON f.id = d.fieldid
+        WHERE
+                f.shortname = 'airtimerole' AND d.userid = u.id
+    ) "AT Role"
 FROM
     prefix_course_completions AS p
         JOIN prefix_course AS c ON p.course = c.id
         JOIN prefix_course_categories cc ON c.category = cc.id
         JOIN prefix_user AS u ON p.userid = u.id
+        LEFT JOIN prefix_customfield_data hours_billable ON hours_billable.instanceid = c.id AND hours_billable.fieldid = (SELECT cf.id FROM prefix_customfield_field cf WHERE cf.shortname = 'hours_billable')
         LEFT JOIN prefix_customfield_data course_hours ON course_hours.instanceid = c.id AND course_hours.fieldid = (SELECT cf.id FROM prefix_customfield_field cf WHERE cf.shortname = 'course_length')
         LEFT JOIN prefix_user_info_field AS manfield ON manfield.shortname = 'managerid'
         LEFT JOIN prefix_user_info_data AS mandata ON mandata.fieldid = manfield.id AND mandata.userid = u.id
