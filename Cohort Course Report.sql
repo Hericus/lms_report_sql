@@ -2,9 +2,9 @@ SELECT
     CONCAT('<a target="_blank" href="%%WWWROOT%%/cohort/assign.php?id=',ch.id,'&returnurl=%2Fcohort%2Findex.php%3Fpage%3D0">', ch.name,'</a>') "Cohort",
     co.fullname "Course",
     CASE
-        WHEN cfgenable.value = '1' AND cfgrecompletiondur.value = '31449600' THEN 'Annual'
-        WHEN cfgenable.value = '1' AND cfgrecompletiondur.value = '62899200' THEN 'Biennial'
-        WHEN cfgenable.value = '1' AND cfgrecompletiondur.value = '94348800' THEN 'Triennial'
+        WHEN cfgenable.value = '1' AND (cfgrecompletiondur.value = '31449600' OR cfgrecompletiondur.value = '31622400') THEN 'Annual'
+        WHEN cfgenable.value = '1' AND (cfgrecompletiondur.value = '62899200' OR cfgrecompletiondur.value = '63158400') THEN 'Biennial'
+        WHEN cfgenable.value = '1' AND (cfgrecompletiondur.value = '94348800' OR cfgrecompletiondur.value = '94694400') THEN 'Triennial'
         END "Duration",
     CASE
         WHEN customfield.value = '1' THEN 'Yes'

@@ -72,9 +72,9 @@ FROM
     WHEN cached.latestcomp IS NOT NULL THEN 1
     END "status",
     CASE
-    WHEN cfgenable.value = '1' AND cached.latestduration = 31449600 THEN 'Annual'
-    WHEN cfgenable.value = '1' AND cached.latestduration = 62899200 THEN 'Biennial'
-    WHEN cfgenable.value = '1' AND cached.latestduration = 94348800 THEN 'Triennial'
+    WHEN cfgenable.value = '1' AND (cached.latestduration = 31449600 OR cached.latestduration = 31622400) THEN 'Annual'
+    WHEN cfgenable.value = '1' AND (cached.latestduration = 62899200 OR cached.latestduration = 63158400) THEN 'Biennial'
+    WHEN cfgenable.value = '1' AND (cached.latestduration = 94348800 OR cached.latestduration = 94694400)THEN 'Triennial'
     END "duration",
     CASE
     WHEN cached.latestcomp IS NULL THEN

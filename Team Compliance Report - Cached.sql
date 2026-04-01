@@ -21,6 +21,7 @@ SELECT
     result.manager  "Manager",
     result.mandiv  "Manager Division",
     result.cohort  "Cohort",
+
     CASE
         WHEN result.airtimerole like '%Superintendent%' OR result.airtimerole like '%Clerk%' OR result.airtimerole like '%Site Accountant%' OR result.airtimerole like '%Scheduler%' THEN
             (
@@ -31,17 +32,21 @@ SELECT
                 )
         ELSE 'N/A'
         END  "Job Status",
+
     CASE
         WHEN result.activesup = 'Yes' THEN 'Yes'
         ELSE 'No'
         END  "Active Sup",
+
     CASE
         WHEN result.hiredate IS NULL THEN  NULL
         WHEN result.hiredate::double precision = 1 THEN  'User missing'
 		WHEN result.hiredate::double precision = -1 THEN  'Date mising'
         ELSE  to_char(to_timestamp(result.hiredate::double precision),'YYYY-MM-DD')
     END "Hire date",
+
 	result.airtimerole  "Role"
+
 FROM
     (
     SELECT
@@ -49,6 +54,7 @@ FROM
     u.firstname  "firstname",
     u.lastname  "lastname",
     u.email  "email",
+
     (
     SELECT
     d.data
@@ -59,6 +65,7 @@ FROM
     WHERE
     f.shortname = 'company' AND d.userid = u.id
     )  "company",
+
     (
     SELECT
     d.data
@@ -68,9 +75,11 @@ FROM
     WHERE
     f.shortname = 'employeenumber' AND d.userid = u.id
     )  "employeenumber",
+
     CONCAT('<a href="/course/view.php?id=', c.id, '">', c.fullname, '</a>') "course",
     to_char(to_timestamp(cached.originalcomp), 'YYYY-MM-DD') "original",
     to_char(to_timestamp(cached.latestcomp), 'YYYY-MM-DD') "recent",
+
     CASE
     WHEN cached.latestcomp IS NULL THEN
     (
@@ -95,11 +104,13 @@ FROM
     )
     WHEN cached.latestcomp IS NOT NULL THEN 1
     END "status",
+
     CASE
-    WHEN cfgenable.value = '1' AND cached.latestduration = 31449600 THEN 'Annual'
-    WHEN cfgenable.value = '1' AND cached.latestduration = 62899200 THEN 'Biennial'
-    WHEN cfgenable.value = '1' AND cached.latestduration = 94348800 THEN 'Triennial'
+    WHEN cfgenable.value = '1' AND (cached.latestduration = 31449600 OR cached.latestduration = 31622400) THEN 'Annual'
+    WHEN cfgenable.value = '1' AND (cached.latestduration = 62899200 OR cached.latestduration = 63158400) THEN 'Biennial'
+    WHEN cfgenable.value = '1' AND (cached.latestduration = 94348800 OR cached.latestduration = 94694400) THEN 'Triennial'
     END "duration",
+
     CASE
     WHEN cached.latestcomp IS NULL THEN
     (
@@ -118,7 +129,9 @@ FROM
     to_char(to_timestamp(cached.latestcomp + cached.latestduration), 'YYYY-MM-DD')
     ELSE NULL
     END "expiration",
+
     u.idnumber  "sso",
+
     (
     SELECT
     d.data
@@ -127,6 +140,7 @@ FROM
     WHERE
     f.shortname = 'lobname' AND d.userid = u.id
     )  "lob",
+
     (
     SELECT
     d.data
@@ -135,12 +149,14 @@ FROM
     WHERE
     f.shortname = 'region' AND d.userid = u.id
     )  "region",
+
     (
     SELECT
     CONCAT(manuser.firstname, ' ', manuser.lastname)
     FROM
     prefix_user manuser WHERE mandata.data <> '' AND manuser.id = mandata.data::bigint
     ) "manager",
+
     (
     SELECT
     d.data
@@ -162,15 +178,9 @@ FROM
     WHERE
     f.shortname = 'job_status' AND d.userid = u.id
     ) "jobstatus",
-    (
-    SELECT
-    d.data
-    FROM
-    prefix_user_info_field AS f
-    JOIN prefix_user_info_data AS d ON f.id = d.fieldid
-    WHERE
-    f.shortname = 'airtimerole' AND d.userid = u.id
-    ) "airtimerole",
+
+    roledata.data "airtimerole",
+    
     (
     SELECT
     d.data
@@ -180,6 +190,7 @@ FROM
     WHERE
     f.shortname = 'active_sup' AND d.userid = u.id
     ) "activesup",
+
     (
     SELECT
     d.data
@@ -189,6 +200,7 @@ FROM
     WHERE
     f.shortname = 'original_hire_date' AND d.userid = u.id
     ) "hiredate"
+
     FROM
     prefix_user_enrolments AS ue
     JOIN prefix_enrol AS e ON ue.enrolid = e.id
@@ -201,8 +213,13 @@ FROM
     LEFT JOIN prefix_local_recompletion_config cfgenable ON cfgenable.course = c.id AND cfgenable.name = 'enable'
     LEFT JOIN prefix_local_recompletion_config cfgrecompletiondur ON cfgrecompletiondur.course = c.id AND cfgrecompletiondur.name = 'recompletionduration'
     LEFT JOIN prefix_local_recompletion_config cfggrace ON cfggrace.course = c.id AND cfggrace.name = 'graceperiod'
+
     LEFT JOIN prefix_user_info_field AS manfield ON manfield.shortname = 'managerid'
     LEFT JOIN prefix_user_info_data AS mandata ON mandata.fieldid = manfield.id AND mandata.userid = u.id
+
+    LEFT JOIN prefix_user_info_field AS rolefield ON rolefield.shortname = 'airtimerole'
+    LEFT JOIN prefix_user_info_data AS roledata ON roledata.fieldid = rolefield.id AND roledata.userid = u.id
+    
     WHERE
     e.enrol = 'cohort'
     AND e.status = 0
@@ -210,6 +227,7 @@ FROM
     AND c.enablecompletion = 1
     AND c.visible = 1
     AND course_tied_to_compliance.intvalue = 1
+    AND roledata.data not like '%LEAVE_OF_ABSENCE%'
 
     %%FILTER_SUBCATEGORIES:cc.path%%
     %%FILTER_COURSES:c.id%%
