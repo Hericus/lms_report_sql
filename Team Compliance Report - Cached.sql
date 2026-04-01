@@ -92,7 +92,7 @@ FROM
     ELSE 3
     END
     )
-    WHEN cfgenable.value = '1' AND cfgrecompletiondur.value IS NOT NULL THEN
+    WHEN cfgenable.value = 'period' AND cfgrecompletiondur.value IS NOT NULL THEN
     (
     SELECT
     CASE
@@ -106,9 +106,9 @@ FROM
     END "status",
 
     CASE
-    WHEN cfgenable.value = '1' AND (cached.latestduration = 31449600 OR cached.latestduration = 31622400) THEN 'Annual'
-    WHEN cfgenable.value = '1' AND (cached.latestduration = 62899200 OR cached.latestduration = 63158400) THEN 'Biennial'
-    WHEN cfgenable.value = '1' AND (cached.latestduration = 94348800 OR cached.latestduration = 94694400) THEN 'Triennial'
+    WHEN cfgenable.value = 'period' AND (cached.latestduration = 31449600 OR cached.latestduration = 31622400) THEN 'Annual'
+    WHEN cfgenable.value = 'period' AND (cached.latestduration = 62899200 OR cached.latestduration = 63158400) THEN 'Biennial'
+    WHEN cfgenable.value = 'period' AND (cached.latestduration = 94348800 OR cached.latestduration = 94694400) THEN 'Triennial'
     END "duration",
 
     CASE
@@ -125,7 +125,7 @@ FROM
     ELSE NULL
     END
     )
-    WHEN cfgenable.value = '1' AND cfgrecompletiondur.value IS NOT NULL THEN
+    WHEN cfgenable.value = 'period' AND cfgrecompletiondur.value IS NOT NULL THEN
     to_char(to_timestamp(cached.latestcomp + cached.latestduration), 'YYYY-MM-DD')
     ELSE NULL
     END "expiration",
@@ -210,7 +210,7 @@ FROM
     JOIN prefix_user AS u ON u.id = ue.userid
     JOIN prefix_cohort cohort ON cohort.id = e.customint1
     LEFT JOIN prefix_local_recompletion_cc_cached cached ON cached.userid = u.id AND cached.courseid = c.id
-    LEFT JOIN prefix_local_recompletion_config cfgenable ON cfgenable.course = c.id AND cfgenable.name = 'enable'
+    LEFT JOIN prefix_local_recompletion_config cfgenable ON cfgenable.course = c.id AND cfgenable.name = 'recompletiontype'
     LEFT JOIN prefix_local_recompletion_config cfgrecompletiondur ON cfgrecompletiondur.course = c.id AND cfgrecompletiondur.name = 'recompletionduration'
     LEFT JOIN prefix_local_recompletion_config cfggrace ON cfggrace.course = c.id AND cfggrace.name = 'graceperiod'
 

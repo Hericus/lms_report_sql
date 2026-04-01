@@ -2,14 +2,14 @@ SELECT
     CONCAT('<a target="_blank" href="%%WWWROOT%%/cohort/assign.php?id=',ch.id,'&returnurl=%2Fcohort%2Findex.php%3Fpage%3D0">', ch.name,'</a>') "Cohort",
     co.fullname "Course",
     CASE
-        WHEN cfgenable.value = '1' AND (cfgrecompletiondur.value = '31449600' OR cfgrecompletiondur.value = '31622400') THEN 'Annual'
-        WHEN cfgenable.value = '1' AND (cfgrecompletiondur.value = '62899200' OR cfgrecompletiondur.value = '63158400') THEN 'Biennial'
-        WHEN cfgenable.value = '1' AND (cfgrecompletiondur.value = '94348800' OR cfgrecompletiondur.value = '94694400') THEN 'Triennial'
-        END "Duration",
+        WHEN cfgenable.value = 'period' AND (cfgrecompletiondur.value = '31449600' OR cfgrecompletiondur.value = '31622400') THEN 'Annual'
+        WHEN cfgenable.value = 'period' AND (cfgrecompletiondur.value = '62899200' OR cfgrecompletiondur.value = '63158400') THEN 'Biennial'
+        WHEN cfgenable.value = 'period' AND (cfgrecompletiondur.value = '94348800' OR cfgrecompletiondur.value = '94694400') THEN 'Triennial'
+    END "Duration",
     CASE
-        WHEN customfield.value = '1' THEN 'Yes'
+        WHEN customfield.value = 'period' THEN 'Yes'
         ELSE 'No'
-        END "Tied to Compliance",
+    END "Tied to Compliance",
     course_hours.value as "Course Hours"
 FROM
     prefix_enrol AS en
@@ -17,7 +17,7 @@ FROM
         INNER JOIN prefix_cohort AS ch ON en.customint1 = ch.id
         LEFT JOIN prefix_course_categories AS cc ON cc.id = co.category
         LEFT JOIN prefix_local_recompletion_config cfgenable
-                  ON cfgenable.course = co.id AND cfgenable.name = 'enable'
+                  ON cfgenable.course = co.id AND cfgenable.name = 'recompletiontype'
         LEFT JOIN prefix_local_recompletion_config cfgrecompletiondur
                   ON cfgrecompletiondur.course = co.id AND cfgrecompletiondur.name = 'recompletionduration'
         LEFT JOIN prefix_customfield_data as customfield
@@ -28,5 +28,5 @@ WHERE
         en.enrol = 'cohort' AND
         en.status = 0
         %%FILTER_SQL_cohort:ch.id:=%%
-%%FILTER_SUBCATEGORIES:cc.path%%
-%%FILTER_COURSES:co.id%%
+        %%FILTER_SUBCATEGORIES:cc.path%%
+        %%FILTER_COURSES:co.id%%
