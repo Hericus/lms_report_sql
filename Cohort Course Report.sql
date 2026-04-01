@@ -7,7 +7,7 @@ SELECT
         WHEN cfgenable.value = 'period' AND (cfgrecompletiondur.value = '94348800' OR cfgrecompletiondur.value = '94694400') THEN 'Triennial'
     END "Duration",
     CASE
-        WHEN customfield.value = 'period' THEN 'Yes'
+        WHEN customfield.value = '1' THEN 'Yes'
         ELSE 'No'
     END "Tied to Compliance",
     course_hours.value as "Course Hours"
