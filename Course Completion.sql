@@ -84,7 +84,7 @@ WHERE
     c.enablecompletion = 1
 
 %%FILTER_SUBCATEGORIES:cc.path%%
-%%FILTER_COURSES:p.course%%
+%%FILTER_COURSES:p.courseid%%
 %%FILTER_SEARCHTEXT_fullname:CONCAT(u.firstname, ' ', u.lastname):~ci%%
 %%FILTER_SQL_cohortid:(SELECT chr.id FROM prefix_cohort AS chr JOIN prefix_cohort_members AS mem ON chr.id = mem.cohortid WHERE chr.visible = 1 AND mem.userid = u.id):in%%
 %%FILTER_SQL_sqltrecords:u.suspended:=%%
