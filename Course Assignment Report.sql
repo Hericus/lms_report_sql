@@ -18,6 +18,7 @@ SELECT
     result.recent  "Most Recent Completion Date",
     
     CASE
+        WHEN result.optionalroleid is not NULL THEN 'Optional'
         WHEN result.status = 1 THEN 'Completed'
         WHEN result.status = 2 THEN '<span class="text-warning"><strong>Coming due</strong></span>'
         WHEN result.status = 3 THEN (
@@ -260,7 +261,7 @@ FROM
             FROM
                 prefix_role as r
                 JOIN prefix_role_assignments AS ra ON ra.roleid = r.id
-				INNER JOIN prefix_context as ctx ON ctx.contextlevel = 50 and ctx.instanceid = e.courseid and ctx.id = ra.contextid
+                INNER JOIN prefix_context as ctx ON ctx.contextlevel = 50 and ctx.instanceid = e.courseid and ctx.id = ra.contextid
             WHERE
                 r.shortname = 'studentoptional' AND
                 ra.userid = u.id
@@ -286,6 +287,8 @@ FROM
         e.status = 0 AND ue.status = 0
         AND c.enablecompletion = 1
         AND c.visible = 1
+        
+        AND u.email not like '%@hericus.com'
 
         %%FILTER_SUBCATEGORIES:cc.path%%
         %%FILTER_COURSES:c.id%%
