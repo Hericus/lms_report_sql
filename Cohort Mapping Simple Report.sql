@@ -59,7 +59,7 @@ SELECT distinct
     rules.airtimerole AS "AirTime Role",
     CONCAT(rules.company, rules.country, rules.cohortlist) as "Filter",
     c.name AS "Add to Cohort",
-    course.shortname AS "Enrol in",
+    CONCAT('<a href="/course/view.php?id=', course.id, '">', course.fullname, '</a>') AS "Enrol in",
     CASE
         WHEN course_tied_to_compliance.intvalue = 1 THEN 'Yes'
         ELSE 'No'
