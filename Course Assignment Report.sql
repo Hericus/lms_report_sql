@@ -266,6 +266,7 @@ FROM
         LEFT JOIN prefix_user_info_field AS manfield ON manfield.shortname = 'managerid'
         LEFT JOIN prefix_user_info_data AS mandata ON mandata.fieldid = manfield.id AND mandata.userid = u.id
         LEFT JOIN prefix_customfield_data AS course_hours ON course_hours.instanceid = c.id AND course_hours.fieldid = (SELECT cf.id FROM prefix_customfield_field cf WHERE cf.shortname = 'course_length')
+
     WHERE
         e.status = 0 AND ue.status = 0
         AND c.enablecompletion = 1
@@ -285,5 +286,6 @@ FROM
 ) AS result
 
 WHERE 1 = 1
+and result.airtimerole  not like '%LEAVE_OF_ABSENCE%'
 
     %%FILTER_SQL_status:result.status:=%%
