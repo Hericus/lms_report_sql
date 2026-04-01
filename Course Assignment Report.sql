@@ -1,3 +1,5 @@
+Course Assignment Report: as per 17/06/2025 pre-introduction of LEAVE_OF_ABSENCE exclusion
+
 SELECT
     result.userid  "Id",
     result.firstname  "First Name",
@@ -7,11 +9,12 @@ SELECT
     result.employeenumber  "Employee Number",
     result.enrollment "Course Assignment Method",
     result.course "Course",
+    result.coursehours "Course Hours",
 
-	CASE
-		WHEN result.tiedtocompliance = 1 THEN 'Yes'
-		ELSE 'No'
-	END "Tied to Compliance",
+    CASE
+        WHEN result.tiedtocompliance = 1 THEN 'Yes'
+        ELSE 'No'
+    END "Tied to Compliance",
     
     result.original  "Original Completion Date",
     result.recent  "Most Recent Completion Date",
@@ -54,11 +57,11 @@ SELECT
     CASE
         WHEN result.hiredate IS NULL THEN  NULL
         WHEN result.hiredate::double precision = 1 THEN  'User missing'
-		WHEN result.hiredate::double precision = -1 THEN  'Date mising'
+        WHEN result.hiredate::double precision = -1 THEN  'Date mising'
         ELSE  to_char(to_timestamp(result.hiredate::double precision),'YYYY-MM-DD')
     END "Hire date",
 
-	result.airtimerole "Role"
+    result.airtimerole "Role"
 FROM
 (
     SELECT
@@ -136,9 +139,9 @@ FROM
         END "status",
 
         CASE
-            WHEN cfgenable.value = '1' AND cached.latestduration = 31449600 THEN 'Annual'
-            WHEN cfgenable.value = '1' AND cached.latestduration = 62899200 THEN 'Biennial'
-            WHEN cfgenable.value = '1' AND cached.latestduration = 94348800 THEN 'Triennial'
+            WHEN cfgenable.value = '1' AND (cached.latestduration = 31449600 OR cached.latestduration = 31622400) THEN 'Annual'
+            WHEN cfgenable.value = '1' AND (cached.latestduration = 62899200 OR cached.latestduration = 63158400) THEN 'Biennial'
+            WHEN cfgenable.value = '1' AND (cached.latestduration = 94348800 OR cached.latestduration = 94694400) THEN 'Triennial'
         END "duration",
 
         CASE
@@ -244,7 +247,9 @@ FROM
                 JOIN prefix_user_info_data AS d ON f.id = d.fieldid
             WHERE
                 f.shortname = 'original_hire_date' AND d.userid = u.id
-        ) "hiredate"    
+        ) "hiredate",
+
+        course_hours.value as "coursehours"
 
     FROM
         prefix_user_enrolments AS ue
@@ -260,6 +265,7 @@ FROM
         LEFT JOIN prefix_local_recompletion_config cfggrace ON cfggrace.course = c.id AND cfggrace.name = 'graceperiod'
         LEFT JOIN prefix_user_info_field AS manfield ON manfield.shortname = 'managerid'
         LEFT JOIN prefix_user_info_data AS mandata ON mandata.fieldid = manfield.id AND mandata.userid = u.id
+        LEFT JOIN prefix_customfield_data AS course_hours ON course_hours.instanceid = c.id AND course_hours.fieldid = (SELECT cf.id FROM prefix_customfield_field cf WHERE cf.shortname = 'course_length')
     WHERE
         e.status = 0 AND ue.status = 0
         AND c.enablecompletion = 1
