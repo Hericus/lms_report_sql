@@ -1,5 +1,3 @@
-Course Assignment Report: as per 17/06/2025 pre-introduction of LEAVE_OF_ABSENCE exclusion
-
 SELECT
     result.userid  "Id",
     result.firstname  "First Name",
@@ -61,7 +59,12 @@ SELECT
         ELSE  to_char(to_timestamp(result.hiredate::double precision),'YYYY-MM-DD')
     END "Hire date",
 
-    result.airtimerole "Role"
+    result.airtimerole "Role",
+    
+    CASE
+        WHEN result.optionalroleid is NULL THEN 'Required'
+        ELSE 'Optional'
+    END "Course Assignment Level"
 FROM
 (
     SELECT
@@ -249,7 +252,19 @@ FROM
                 f.shortname = 'original_hire_date' AND d.userid = u.id
         ) "hiredate",
 
-        course_hours.value as "coursehours"
+        course_hours.value as "coursehours",
+        
+        (
+            SELECT
+                ra.id
+            FROM
+                prefix_role as r
+                JOIN prefix_role_assignments AS ra ON ra.roleid = r.id
+				INNER JOIN prefix_context as ctx ON ctx.contextlevel = 50 and ctx.instanceid = e.courseid and ctx.id = ra.contextid
+            WHERE
+                r.shortname = 'studentoptional' AND
+                ra.userid = u.id
+        ) "optionalroleid"
 
     FROM
         prefix_user_enrolments AS ue
