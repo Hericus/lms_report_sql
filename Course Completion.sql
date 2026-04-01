@@ -53,7 +53,23 @@ SELECT
                 JOIN prefix_user_info_data AS d ON f.id = d.fieldid
         WHERE
                 f.shortname = 'airtimerole' AND d.userid = u.id
-    ) "AT Role"
+    ) "AT Role",
+    
+        
+    CASE
+        WHEN (
+            SELECT
+                ra.id
+            FROM
+                prefix_role as r
+                JOIN prefix_role_assignments AS ra ON ra.roleid = r.id
+                INNER JOIN prefix_context as ctx ON ctx.contextlevel = 50 and ctx.instanceid = p.courseid and ctx.id = ra.contextid
+            WHERE
+                r.shortname = 'studentoptional' AND
+                ra.userid = u.id
+            ) is NULL THEN 'Required'
+        ELSE 'Optional'
+    END "Course Assignment Level"
 
 FROM
     prefix_local_recompletion_cc_cached AS p
