@@ -97,7 +97,7 @@ FROM
 
         (
             SELECT 
-                string_agg(e.enrol, ', ')
+                string_agg(distinct e.enrol, ', ')
             FROM 
                 prefix_user_enrolments AS ue JOIN prefix_enrol AS e ON ue.enrolid = e.id
             WHERE 
