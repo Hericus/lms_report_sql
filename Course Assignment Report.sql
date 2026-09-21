@@ -83,25 +83,16 @@ FROM
 
         CASE
             WHEN cached.latestcomp IS NULL THEN
-            (
-                SELECT
                 CASE
-                    WHEN cfggrace.value::bigint > 0 AND
-                    (
-                        enr.lastenrolled + cfggrace.value::bigint > extract( epoch from now() )
-                    ) THEN 2
+                    WHEN cfggrace.value::bigint > 0 AND enr.lastenrolled + cfggrace.value::bigint > extract( epoch from now() ) THEN 2
                     ELSE 3
                 END
-            )
             WHEN cfgenable.value = 'period' AND cfgrecompletiondur.value IS NOT NULL THEN
-            (
-                SELECT
                 CASE
                     WHEN cached.latestcomp + cached.latestduration < extract(epoch from now()) THEN 3
                     WHEN cached.latestcomp + cached.latestduration - cached.latestnotify < extract(epoch from now()) THEN 2
                     ELSE 1
                 END
-            )
             WHEN cached.latestcomp IS NOT NULL THEN 1
         END "status",
 
@@ -113,14 +104,10 @@ FROM
 
         CASE
             WHEN cached.latestcomp IS NULL THEN
-            (
-                SELECT
                 CASE
-                    WHEN cfggrace.value::bigint > 0
-                    THEN to_char( to_timestamp(enr.lastenrolled + cfggrace.value::bigint), 'YYYY-MM-DD' )
+                    WHEN cfggrace.value::bigint > 0 THEN to_char( to_timestamp(enr.lastenrolled + cfggrace.value::bigint), 'YYYY-MM-DD' )
                     ELSE NULL
                 END
-            )
             WHEN cfgenable.value = 'period' AND cfgrecompletiondur.value IS NOT NULL THEN to_char(to_timestamp(cached.latestcomp + cached.latestduration), 'YYYY-MM-DD')
             ELSE NULL
         END "expiration",
@@ -130,7 +117,7 @@ FROM
         uf.region  "region",
         CONCAT(manuser.firstname, ' ', manuser.lastname) as "manager",
         uf.mandiv as "mandiv",
-        cohort.name "cohort",
+        enr.cohort as "cohort",
         uf.jobstatus as "jobstatus",
         uf.airtimerole "airtimerole",
         uf.activesup as "activesup",
@@ -139,19 +126,35 @@ FROM
         raopt.id as "optionalroleid"
 
     FROM
-        prefix_user_enrolments AS ue
-        JOIN prefix_enrol AS e ON ue.enrolid = e.id
-        JOIN prefix_course AS c ON c.id = e.courseid
+        (
+            SELECT ue.userid,
+                e.courseid,
+                string_agg(DISTINCT e.enrol, ', ')                            AS enrollment,
+                max(GREATEST(ue.timecreated, ue.timestart, ue.timemodified))  AS lastenrolled,
+                string_agg(DISTINCT cohort.name, ', ')                        AS cohort
+            FROM prefix_user_enrolments ue
+                JOIN prefix_enrol  e  ON e.id = ue.enrolid AND e.status = 0
+                JOIN prefix_course c  ON c.id = e.courseid AND c.enablecompletion = 1 AND c.visible = 1
+                JOIN prefix_user   u  ON u.id = ue.userid
+                    %%FILTER_SQL_sqltrecords:u.suspended:=%%
+                    AND u.email NOT LIKE '%@hericus.com'
+                LEFT JOIN prefix_cohort cohort ON e.enrol = 'cohort' AND cohort.id = e.customint1
+            WHERE
+                ue.status = 0
+                %%FILTER_SQL_cohortid:e.customint1:rin%%
+            GROUP BY ue.userid, e.courseid
+        ) enr
+        JOIN prefix_course c ON c.id = enr.courseid
         JOIN prefix_course_categories cc ON c.category = cc.id
-        JOIN prefix_user AS u ON u.id = ue.userid
-        LEFT JOIN prefix_cohort cohort ON cohort.id = e.customint1
+        JOIN prefix_user u   ON u.id = enr.userid
         LEFT JOIN prefix_customfield_data course_tied_to_compliance ON course_tied_to_compliance.instanceid = c.id AND course_tied_to_compliance.fieldid = (SELECT cf.id FROM prefix_customfield_field cf WHERE cf.shortname = 'course_tied_to_compliance')
         LEFT JOIN prefix_local_recompletion_cc_cached cached ON cached.userid = u.id AND cached.courseid = c.id
         LEFT JOIN prefix_local_recompletion_config cfgenable ON cfgenable.course = c.id AND cfgenable.name = 'recompletiontype'
         LEFT JOIN prefix_local_recompletion_config cfgrecompletiondur ON cfgrecompletiondur.course = c.id AND cfgrecompletiondur.name = 'recompletionduration'
         LEFT JOIN prefix_local_recompletion_config cfggrace ON cfggrace.course = c.id AND cfggrace.name = 'graceperiod'
         LEFT JOIN (
-            SELECT d.userid,
+            SELECT
+                d.userid,
                 max(d.data) FILTER (WHERE f.shortname = 'company')            AS company,
                 max(d.data) FILTER (WHERE f.shortname = 'employeenumber')     AS employeenumber,
                 max(d.data) FILTER (WHERE f.shortname = 'lobname')            AS lob,
@@ -163,32 +166,18 @@ FROM
                 max(d.data) FILTER (WHERE f.shortname = 'managerid')          AS managerid,
                 max(d.data) FILTER (WHERE f.shortname = 'original_hire_date') AS hiredate
             FROM prefix_user_info_data d
-            JOIN prefix_user_info_field f ON f.id = d.fieldid
-            WHERE f.shortname IN ('company','employeenumber','lobname','region','mandiv',
-                                  'job_status','airtimerole','active_sup','managerid',
-                                  'original_hire_date')
+                JOIN prefix_user_info_field f ON f.id = d.fieldid
+            WHERE
+                f.shortname IN ('company','employeenumber','lobname','region','mandiv', 'job_status','airtimerole','active_sup','managerid','original_hire_date')
             GROUP BY d.userid
         ) uf ON uf.userid = u.id
         LEFT JOIN prefix_user manuser ON manuser.id = NULLIF(uf.managerid, '')::bigint
         LEFT JOIN prefix_customfield_data AS course_hours ON course_hours.instanceid = c.id AND course_hours.fieldid = (SELECT cf.id FROM prefix_customfield_field cf WHERE cf.shortname = 'course_length')
-        LEFT JOIN (
-            SELECT ue2.userid, e2.courseid,
-               string_agg(DISTINCT e2.enrol, ', ')                             AS enrollment,
-               max(GREATEST(ue2.timecreated, ue2.timestart, ue2.timemodified)) AS lastenrolled
-            FROM prefix_user_enrolments ue2
-            JOIN prefix_enrol e2 ON e2.id = ue2.enrolid
-            GROUP BY ue2.userid, e2.courseid
-        ) enr ON enr.userid = u.id AND enr.courseid = c.id
         LEFT JOIN prefix_context ctx50 ON ctx50.contextlevel = 50 AND ctx50.instanceid = c.id
         LEFT JOIN prefix_role_assignments raopt ON raopt.contextid = ctx50.id AND raopt.userid = u.id AND raopt.roleid = (SELECT id FROM prefix_role WHERE shortname = 'studentoptional')
 
     WHERE
-        e.status = 0 AND ue.status = 0
-        AND c.enablecompletion = 1
-        AND c.visible = 1
-        
-        AND u.email not like '%@hericus.com'
-        and uf.airtimerole  not like '%LEAVE_OF_ABSENCE%'
+        uf.airtimerole  not like '%LEAVE_OF_ABSENCE%'
 
         %%FILTER_SUBCATEGORIES:cc.path%%
         %%FILTER_COURSES:c.id%%
@@ -196,9 +185,7 @@ FROM
         %%FILTER_SQL_company:(SELECT d.data FROM prefix_user_info_field AS f JOIN prefix_user_info_data AS d ON f.id = d.fieldid WHERE f.shortname = 'company' AND d.userid = u.id):~%%
         %%FILTER_SQL_lob:(SELECT d.data FROM prefix_user_info_field AS f JOIN prefix_user_info_data AS d ON f.id = d.fieldid WHERE f.shortname = 'lobname' AND d.userid = u.id):~%%
         %%FILTER_SEARCHTEXT_craftnumber:(SELECT d.data FROM prefix_user_info_field AS f JOIN prefix_user_info_data AS d ON f.id = d.fieldid WHERE f.shortname = 'craftnumber' AND d.userid = u.id):~ci%%
-        %%FILTER_SQL_cohortid:e.customint1:rin%%
         %%FILTER_SQL_region:(SELECT d.data FROM prefix_user_info_field AS f JOIN prefix_user_info_data AS d ON f.id = d.fieldid WHERE f.shortname = 'region' AND d.userid = u.id):rin%%
-        %%FILTER_SQL_sqltrecords:u.suspended:=%%
         %%FILTER_SQL_manager:mandata.data:=%%
 ) AS result
 
