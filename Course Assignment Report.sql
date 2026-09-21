@@ -79,14 +79,7 @@ FROM
 
         uf.employeenumber as "employeenumber",
 
-        (
-            SELECT 
-                string_agg(distinct e.enrol, ', ')
-            FROM 
-                prefix_user_enrolments AS ue JOIN prefix_enrol AS e ON ue.enrolid = e.id
-            WHERE 
-                ue.userid = u.id and e.courseid = c.id
-        ) AS "enrollment",
+        enr.enrollment AS "enrollment",
         
         CONCAT('<a href="/course/view.php?id=', c.id, '">', c.fullname, '</a>') "course",
         
@@ -101,15 +94,7 @@ FROM
                 CASE
                     WHEN cfggrace.value::bigint > 0 AND
                     (
-                        (
-                            SELECT 
-                                MAX(GREATEST(ue2.timecreated, ue2.timestart, ue2.timemodified))
-                            FROM 
-                                prefix_user_enrolments ue2 
-                                JOIN prefix_enrol e2 ON e2.id = ue2.enrolid
-                            WHERE 
-                                e2.courseid = c.id AND ue2.userid = u.id
-                        ) + cfggrace.value::bigint > extract( epoch from now() )
+                        enr.lastenrolled + cfggrace.value::bigint > extract( epoch from now() )
                     ) THEN 2
                     ELSE 3
                 END
@@ -138,19 +123,7 @@ FROM
                 SELECT
                 CASE
                     WHEN cfggrace.value::bigint > 0
-                    THEN to_char(
-                        to_timestamp(
-                            (
-                                SELECT 
-                                    MAX(GREATEST(ue2.timecreated, ue2.timestart, ue2.timemodified))
-                                FROM 
-                                    prefix_user_enrolments ue2
-                                    JOIN prefix_enrol e2 ON e2.id = ue2.enrolid
-                                WHERE 
-                                    e2.courseid = c.id AND ue2.userid = u.id
-                            ) + cfggrace.value::bigint
-                        ), 'YYYY-MM-DD'
-                    )
+                    THEN to_char( to_timestamp(enr.lastenrolled + cfggrace.value::bigint), 'YYYY-MM-DD' )
                     ELSE NULL
                 END
             )
@@ -206,16 +179,16 @@ FROM
         LEFT JOIN prefix_local_recompletion_config cfggrace ON cfggrace.course = c.id AND cfggrace.name = 'graceperiod'
         LEFT JOIN (
             SELECT d.userid,
-                   max(d.data) FILTER (WHERE f.shortname = 'company')            AS company,
-                   max(d.data) FILTER (WHERE f.shortname = 'employeenumber')     AS employeenumber,
-                   max(d.data) FILTER (WHERE f.shortname = 'lobname')            AS lob,
-                   max(d.data) FILTER (WHERE f.shortname = 'region')             AS region,
-                   max(d.data) FILTER (WHERE f.shortname = 'mandiv')             AS mandiv,
-                   max(d.data) FILTER (WHERE f.shortname = 'job_status')         AS jobstatus,
-                   max(d.data) FILTER (WHERE f.shortname = 'airtimerole')        AS airtimerole,
-                   max(d.data) FILTER (WHERE f.shortname = 'active_sup')         AS activesup,
-                   max(d.data) FILTER (WHERE f.shortname = 'managerid')          AS managerid,
-                   max(d.data) FILTER (WHERE f.shortname = 'original_hire_date') AS hiredate
+                max(d.data) FILTER (WHERE f.shortname = 'company')            AS company,
+                max(d.data) FILTER (WHERE f.shortname = 'employeenumber')     AS employeenumber,
+                max(d.data) FILTER (WHERE f.shortname = 'lobname')            AS lob,
+                max(d.data) FILTER (WHERE f.shortname = 'region')             AS region,
+                max(d.data) FILTER (WHERE f.shortname = 'mandiv')             AS mandiv,
+                max(d.data) FILTER (WHERE f.shortname = 'job_status')         AS jobstatus,
+                max(d.data) FILTER (WHERE f.shortname = 'airtimerole')        AS airtimerole,
+                max(d.data) FILTER (WHERE f.shortname = 'active_sup')         AS activesup,
+                max(d.data) FILTER (WHERE f.shortname = 'managerid')          AS managerid,
+                max(d.data) FILTER (WHERE f.shortname = 'original_hire_date') AS hiredate
             FROM prefix_user_info_data d
             JOIN prefix_user_info_field f ON f.id = d.fieldid
             WHERE f.shortname IN ('company','employeenumber','lobname','region','mandiv',
@@ -225,13 +198,21 @@ FROM
         ) uf ON uf.userid = u.id
         LEFT JOIN prefix_user manuser ON manuser.id = NULLIF(uf.managerid, '')::bigint
         LEFT JOIN prefix_customfield_data AS course_hours ON course_hours.instanceid = c.id AND course_hours.fieldid = (SELECT cf.id FROM prefix_customfield_field cf WHERE cf.shortname = 'course_length')
-
+        LEFT JOIN (
+            SELECT ue2.userid, e2.courseid,
+               string_agg(DISTINCT e2.enrol, ', ')                             AS enrollment,
+               max(GREATEST(ue2.timecreated, ue2.timestart, ue2.timemodified)) AS lastenrolled
+            FROM prefix_user_enrolments ue2
+            JOIN prefix_enrol e2 ON e2.id = ue2.enrolid
+            GROUP BY ue2.userid, e2.courseid
+        ) enr ON enr.userid = u.id AND enr.courseid = c.id
     WHERE
         e.status = 0 AND ue.status = 0
         AND c.enablecompletion = 1
         AND c.visible = 1
         
         AND u.email not like '%@hericus.com'
+        and uf.airtimerole  not like '%LEAVE_OF_ABSENCE%'
 
         %%FILTER_SUBCATEGORIES:cc.path%%
         %%FILTER_COURSES:c.id%%
@@ -243,10 +224,9 @@ FROM
         %%FILTER_SQL_region:(SELECT d.data FROM prefix_user_info_field AS f JOIN prefix_user_info_data AS d ON f.id = d.fieldid WHERE f.shortname = 'region' AND d.userid = u.id):rin%%
         %%FILTER_SQL_sqltrecords:u.suspended:=%%
         %%FILTER_SQL_manager:mandata.data:=%%
-    ORDER BY u.lastname ASC
 ) AS result
 
 WHERE 1 = 1
-and result.airtimerole  not like '%LEAVE_OF_ABSENCE%'
 
     %%FILTER_SQL_status:result.status:=%%
+ORDER BY lastname asc, firstname asc, employeenumber asc
