@@ -74,17 +74,11 @@ FROM
         u.lastname  "lastname",
         u.email  "email",
         course_tied_to_compliance.intvalue as "tiedtocompliance",
-
         uf.company as "company",
-
         uf.employeenumber as "employeenumber",
-
         enr.enrollment AS "enrollment",
-        
         CONCAT('<a href="/course/view.php?id=', c.id, '">', c.fullname, '</a>') "course",
-        
         to_char(to_timestamp(cached.originalcomp), 'YYYY-MM-DD') "original",
-        
         to_char(to_timestamp(cached.latestcomp), 'YYYY-MM-DD') "recent",
 
         CASE
@@ -132,38 +126,17 @@ FROM
         END "expiration",
 
         u.idnumber  "sso",
-
         uf.lob as "lob",
-        
         uf.region  "region",
-        
         CONCAT(manuser.firstname, ' ', manuser.lastname) as "manager",
-
         uf.mandiv as "mandiv",
-
         cohort.name "cohort",
-
         uf.jobstatus as "jobstatus",
-
         uf.airtimerole "airtimerole",
-        
         uf.activesup as "activesup",
-
         uf.hiredate as "hiredate",
-
         course_hours.value as "coursehours",
-        
-        (
-            SELECT
-                ra.id
-            FROM
-                prefix_role as r
-                JOIN prefix_role_assignments AS ra ON ra.roleid = r.id
-                INNER JOIN prefix_context as ctx ON ctx.contextlevel = 50 and ctx.instanceid = e.courseid and ctx.id = ra.contextid
-            WHERE
-                r.shortname = 'studentoptional' AND
-                ra.userid = u.id
-        ) "optionalroleid"
+        raopt.id as "optionalroleid"
 
     FROM
         prefix_user_enrolments AS ue
@@ -206,6 +179,9 @@ FROM
             JOIN prefix_enrol e2 ON e2.id = ue2.enrolid
             GROUP BY ue2.userid, e2.courseid
         ) enr ON enr.userid = u.id AND enr.courseid = c.id
+        LEFT JOIN prefix_context ctx50 ON ctx50.contextlevel = 50 AND ctx50.instanceid = c.id
+        LEFT JOIN prefix_role_assignments raopt ON raopt.contextid = ctx50.id AND raopt.userid = u.id AND raopt.roleid = (SELECT id FROM prefix_role WHERE shortname = 'studentoptional')
+
     WHERE
         e.status = 0 AND ue.status = 0
         AND c.enablecompletion = 1
