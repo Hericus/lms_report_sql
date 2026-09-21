@@ -75,25 +75,9 @@ FROM
         u.email  "email",
         course_tied_to_compliance.intvalue as "tiedtocompliance",
 
-        (
-            SELECT
-                d.data
-            FROM
-                prefix_user_info_field AS f
-                JOIN prefix_user_info_data AS d ON f.id = d.fieldid
-            WHERE
-                f.shortname = 'company' AND d.userid = u.id
-        )  "company",
+        uf.company as "company",
 
-        (
-            SELECT
-                d.data
-            FROM
-                prefix_user_info_field AS f
-                JOIN prefix_user_info_data AS d ON f.id = d.fieldid
-            WHERE
-                f.shortname = 'employeenumber' AND d.userid = u.id
-        )  "employeenumber",
+        uf.employeenumber as "employeenumber",
 
         (
             SELECT 
@@ -176,82 +160,23 @@ FROM
 
         u.idnumber  "sso",
 
-        (
-            SELECT
-                d.data
-            FROM
-                prefix_user_info_field AS f JOIN prefix_user_info_data AS d ON f.id = d.fieldid
-            WHERE
-                f.shortname = 'lobname' AND d.userid = u.id
-        )  "lob",
+        uf.lob as "lob",
         
-        (
-            SELECT
-                d.data
-            FROM
-                prefix_user_info_field AS f JOIN prefix_user_info_data AS d ON f.id = d.fieldid
-            WHERE
-                f.shortname = 'region' AND d.userid = u.id
-        )  "region",
+        uf.region  "region",
         
-        (
-            SELECT
-                CONCAT(manuser.firstname, ' ', manuser.lastname)
-            FROM
-                prefix_user manuser WHERE mandata.data <> '' AND manuser.id = mandata.data::bigint
-        ) "manager",
+        CONCAT(manuser.firstname, ' ', manuser.lastname) as "manager",
 
-        (
-            SELECT
-                d.data
-            FROM
-                prefix_user_info_field AS f
-                JOIN prefix_user_info_data AS d ON f.id = d.fieldid
-            WHERE
-                f.shortname = 'mandiv' AND d.userid = u.id
-        ) "mandiv",
+        uf.mandiv as "mandiv",
 
         cohort.name "cohort",
 
-        (
-            SELECT
-                d.data
-            FROM
-                prefix_user_info_field AS f
-                JOIN prefix_user_info_data AS d ON f.id = d.fieldid
-            WHERE
-                f.shortname = 'job_status' AND d.userid = u.id
-        ) "jobstatus",
+        uf.jobstatus as "jobstatus",
 
-        (
-            SELECT
-                d.data
-            FROM
-                prefix_user_info_field AS f
-                JOIN prefix_user_info_data AS d ON f.id = d.fieldid
-            WHERE
-                f.shortname = 'airtimerole' AND d.userid = u.id
-        ) "airtimerole",
+        uf.airtimerole "airtimerole",
         
-        (
-            SELECT
-                d.data
-            FROM
-                prefix_user_info_field AS f
-                JOIN prefix_user_info_data AS d ON f.id = d.fieldid
-            WHERE
-                f.shortname = 'active_sup' AND d.userid = u.id
-        ) "activesup",
+        uf.activesup as "activesup",
 
-        (
-            SELECT
-                d.data
-            FROM
-                prefix_user_info_field AS f
-                JOIN prefix_user_info_data AS d ON f.id = d.fieldid
-            WHERE
-                f.shortname = 'original_hire_date' AND d.userid = u.id
-        ) "hiredate",
+        uf.hiredate as "hiredate",
 
         course_hours.value as "coursehours",
         
@@ -279,8 +204,26 @@ FROM
         LEFT JOIN prefix_local_recompletion_config cfgenable ON cfgenable.course = c.id AND cfgenable.name = 'recompletiontype'
         LEFT JOIN prefix_local_recompletion_config cfgrecompletiondur ON cfgrecompletiondur.course = c.id AND cfgrecompletiondur.name = 'recompletionduration'
         LEFT JOIN prefix_local_recompletion_config cfggrace ON cfggrace.course = c.id AND cfggrace.name = 'graceperiod'
-        LEFT JOIN prefix_user_info_field AS manfield ON manfield.shortname = 'managerid'
-        LEFT JOIN prefix_user_info_data AS mandata ON mandata.fieldid = manfield.id AND mandata.userid = u.id
+        LEFT JOIN (
+            SELECT d.userid,
+                   max(d.data) FILTER (WHERE f.shortname = 'company')            AS company,
+                   max(d.data) FILTER (WHERE f.shortname = 'employeenumber')     AS employeenumber,
+                   max(d.data) FILTER (WHERE f.shortname = 'lobname')            AS lob,
+                   max(d.data) FILTER (WHERE f.shortname = 'region')             AS region,
+                   max(d.data) FILTER (WHERE f.shortname = 'mandiv')             AS mandiv,
+                   max(d.data) FILTER (WHERE f.shortname = 'job_status')         AS jobstatus,
+                   max(d.data) FILTER (WHERE f.shortname = 'airtimerole')        AS airtimerole,
+                   max(d.data) FILTER (WHERE f.shortname = 'active_sup')         AS activesup,
+                   max(d.data) FILTER (WHERE f.shortname = 'managerid')          AS managerid,
+                   max(d.data) FILTER (WHERE f.shortname = 'original_hire_date') AS hiredate
+            FROM prefix_user_info_data d
+            JOIN prefix_user_info_field f ON f.id = d.fieldid
+            WHERE f.shortname IN ('company','employeenumber','lobname','region','mandiv',
+                                  'job_status','airtimerole','active_sup','managerid',
+                                  'original_hire_date')
+            GROUP BY d.userid
+        ) uf ON uf.userid = u.id
+        LEFT JOIN prefix_user manuser ON manuser.id = NULLIF(uf.managerid, '')::bigint
         LEFT JOIN prefix_customfield_data AS course_hours ON course_hours.instanceid = c.id AND course_hours.fieldid = (SELECT cf.id FROM prefix_customfield_field cf WHERE cf.shortname = 'course_length')
 
     WHERE
